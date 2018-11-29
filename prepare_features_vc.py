@@ -7,6 +7,7 @@ options:
     --max_files=<N>      Max num files to be collected. [default: 100]
     --dst_dir=<d>        Destination directory [default: data/cmu_arctic_vc].
     --overwrite          Overwrite files.
+    --emotion=<d>        Speech emotion [default: normal].
     -h, --help           show this help message and exit
 """
 from __future__ import division, print_function, absolute_import
@@ -34,10 +35,10 @@ from hparams import hparams_debug_string
 # vcc2016.WavFileDataSource and voice_statistics.WavFileDataSource can be
 # drop-in replacement. See below for details:
 # https://r9y9.github.io/nnmnkwii/latest/references/datasets.html#builtin-data-sources
-class MGCSource(cmu_arctic.WavFileDataSource):
-    def __init__(self, data_root, speakers, max_files=None):
+class MGCSource(voice_statistics.WavFileDataSource):
+    def __init__(self, data_root, speakers, max_files=None, emotions=['normal']):
         super(MGCSource, self).__init__(data_root, speakers,
-                                        max_files=max_files)
+                                        max_files=max_files, emotions=emotions)
         self.alpha = None
 
     def collect_features(self, wav_path):
@@ -70,13 +71,16 @@ if __name__ == "__main__":
     max_files = int(args["--max_files"])
     dst_dir = args["--dst_dir"]
     overwrite = args["--overwrite"]
+    emotion = args["--emotion"]
 
     print(hparams_debug_string(hp))
 
     X_dataset = FileSourceDataset(MGCSource(DATA_ROOT, [source_speaker],
-                                            max_files=max_files))
+                                            max_files=max_files,
+                                            emotions=[emotion]))
     Y_dataset = FileSourceDataset(MGCSource(DATA_ROOT, [target_speaker],
-                                            max_files=max_files))
+                                            max_files=max_files,
+                                            emotions=[emotion]))
 
     skip_feature_extraction = exists(join(dst_dir, "X")) \
         and exists(join(dst_dir, "Y"))
