@@ -1,7 +1,7 @@
 # coding: utf-8
 """Trainining script for GAN-based TTS and VC models.
 
-usage: train.py [options] <inputs_dir> <outputs_dir>
+usage: train.py [options]
 
 options:
     --hparams_name=<name>       Name of hyper params [default: vc].
@@ -20,6 +20,8 @@ options:
     --log-event-path=<name>     Log event path.
     --disable-slack             Disable slack message.
     -h, --help                  Show this help message and exit
+    --inputs-dir=<name>
+    --outputs-dir=<name>
 """
 from docopt import docopt
 
@@ -668,8 +670,8 @@ if __name__ == "__main__":
     hp.parse(args["--hparams"])
     print(hparams_debug_string(hp))
 
-    inputs_dir = args["<inputs_dir>"]
-    outputs_dir = args["<outputs_dir>"]
+    inputs_dir = args["--inputs-dir"]
+    outputs_dir = args["--outputs-dir"]
 
     # Assuming inputs and outputs are in same parent directoy
     # This can be relaxed, but for now it's fine.
