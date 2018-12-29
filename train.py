@@ -44,7 +44,9 @@ from tqdm import tqdm
 from warnings import warn
 
 import tensorboard_logger
-from tensorboard_logger import log_value
+from tensorboard_logger import log_value as log_value_tb
+
+from azureml.core.run import Run
 
 from nnmnkwii import preprocessing as P
 from nnmnkwii import metrics
@@ -68,6 +70,8 @@ random_state = 1234
 checkpoint_interval = 10
 
 use_cuda = torch.cuda.is_available()
+
+run = Run.get_context()
 
 
 class NPYDataSource(FileDataSource):
@@ -648,6 +652,11 @@ def train_loop(models, optimizers, dataset_loaders,
                         model, optimizer, global_epoch, checkpoint_dir, name)
 
     return 0
+
+
+def log_value(name, value, epoch):
+    log_value_tb(name, value, epoch)
+    run.log(name, value)
 
 
 def load_checkpoint(model, optimizer, checkpoint_path):
