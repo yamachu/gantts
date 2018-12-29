@@ -742,6 +742,8 @@ if __name__ == "__main__":
 
         np.save(join(data_dir, "data_mean"), data_mean)
         np.save(join(data_dir, "data_var"), data_var)
+        np.save(join(outputs_dir, "data_mean"), data_mean)
+        np.save(join(outputs_dir, "data_var"), data_var)
 
         if hp.generator_params["in_dim"] is None:
             hp.generator_params["in_dim"] = data_mean.shape[-1]
